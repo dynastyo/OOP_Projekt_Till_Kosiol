@@ -1,7 +1,9 @@
-import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Fahrzeug {
-    Date d = new Date();
+
+    private static final AtomicInteger idGenerator = new AtomicInteger(1);
+    private final Integer id;
     private String marke, modell, farbe;
     private int baujahr;
     private double preis;
@@ -12,8 +14,11 @@ public class Fahrzeug {
         this.farbe = farbe;
         this.baujahr = baujahr;
         this.preis = preis;
+        id = idGenerator.getAndIncrement();
     }
-
+    public int getId(){
+        return id;
+    }
     public String getMarke() {
         return marke;
     }
