@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1e8429df-c88c-4c61-bd8b-b791c0c808a6" name="Changes" comment="day1">
+    <list default="true" id="1e8429df-c88c-4c61-bd8b-b791c0c808a6" name="Changes" comment="ne menge neues&#10;next: suche!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Boot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Boot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Fahrzeug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Fahrzeug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lkw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lkw.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MainBoerse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainBoerse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Motorrad.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Motorrad.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pkw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pkw.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,23 +34,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Administrator/IdeaProjects/FahrzeugeProjekt-schlaefer",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/IdeaProjects/FahrzeugeProjekt-schlaefer&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -54,7 +59,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1668675509267</updated>
-      <workItem from="1669064911505" duration="6222000" />
+      <workItem from="1669064911505" duration="6598000" />
+      <workItem from="1669660447560" duration="31000" />
+      <workItem from="1669660575265" duration="44000" />
+      <workItem from="1669660711868" duration="5240000" />
     </task>
     <task id="LOCAL-00001" summary="day1">
       <created>1668691779546</created>
@@ -70,7 +78,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668693268621</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="ne menge neues&#10;next: suche!">
+      <created>1669071511566</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1669071511566</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -89,6 +104,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="day1" />
-    <option name="LAST_COMMIT_MESSAGE" value="day1" />
+    <MESSAGE value="ne menge neues&#10;next: suche!" />
+    <option name="LAST_COMMIT_MESSAGE" value="ne menge neues&#10;next: suche!" />
   </component>
 </project>
