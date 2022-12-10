@@ -2,8 +2,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Fahrzeug {
 
-    private static final AtomicInteger idGenerator = new AtomicInteger(1);
-    private final Integer id;
+    protected static final AtomicInteger idGenerator = new AtomicInteger(1);
+    protected final Integer id;
     private String marke, modell, farbe;
     private int baujahr;
     private double preis;
@@ -16,6 +16,10 @@ public class Fahrzeug {
         this.preis = preis;
         id = idGenerator.getAndIncrement();
     }
+    public Fahrzeug(){
+        id = idGenerator.getAndIncrement();
+    }
+
     public int getId(){
         return id;
     }

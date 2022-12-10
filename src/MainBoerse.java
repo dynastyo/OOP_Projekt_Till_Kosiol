@@ -1,3 +1,4 @@
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -6,9 +7,10 @@ public class MainBoerse {
     static ArrayList<Fahrzeug> datenbank = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
         dummyDaten(30);
         hauptMenue();
+        //Test.test();
     }
     public static void hauptMenue() {
         System.out.println("""
@@ -39,18 +41,25 @@ public class MainBoerse {
         int baujahr;
         double preis;
         String choice, marke, modell, farbe;
-        Class<?> fzgTyp;
+        Fahrzeug fzgTyp;
         System.out.println("""
                 ---------------------------------------------------
                                     Fahrzeug anlegen
                 ---------------------------------------------------""");
-        fzgTyp = waehleFzgTyp();
+        fzgTyp = waehleFzgTyp2();
         marke = addAttribute("Bitte Marke angeben:", String.class);
         modell = addAttribute("Bitte Modell angeben:", String.class);
         farbe = addAttribute("Bitte Farbe angeben:", String.class);
         baujahr = baujahrEingeben("Bitte Baujahr angeben:");
         preis = Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class));
-        anlegenFzg(fzgTyp, marke, modell, farbe, baujahr, preis);
+
+        // HIER GANZ WICHTIG FALLS WAS NULL IST!
+        if (marke.equals("") || modell.equals("") || farbe.equals("")) {
+            System.out.println("Eingaben unvollständig!!! DAS FAHRZEUG KONNTE NICHT GESPEICHERT WERDEN!!!");
+            hauptMenue();
+        }
+
+        anlegenFzg2(fzgTyp, marke, modell, farbe, baujahr, preis);
         System.out.println("""
                 Fahrzeugtyp angelegt.
                 Noch ein Fahrzeug anlegen? (Y/N)""");
@@ -79,25 +88,24 @@ public class MainBoerse {
                         ---------------------------------------------------
                         Bitte wählen:""");
                 String choice = sc.nextLine();
-                if ("1".equals(choice)) {
-                    datenbank.get(index).setMarke(addAttribute("Bitte Marke angeben:", String.class));
-                } else if ("2".equals(choice)) {
-                    datenbank.get(index).setModell(addAttribute("Bitte Modell angeben:", String.class));
-                } else if ("3".equals(choice)) {
-                    datenbank.get(index).setFarbe(addAttribute("Bitte Farbe angeben:", String.class));
-                } else if ("4".equals(choice)) {
-                    datenbank.get(index).setBaujahr(baujahrEingeben("Bitte Baujahr angeben:"));
-                } else if ("5".equals(choice)) {
-                    datenbank.get(index).setPreis(Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class)));
-                } else if ("6".equals(choice)) {
-                    datenbank.get(index).setMarke(addAttribute("Bitte Marke angeben:", String.class));
-                    datenbank.get(index).setModell(addAttribute("Bitte Modell angeben:", String.class));
-                    datenbank.get(index).setFarbe(addAttribute("Bitte Farbe angeben:", String.class));
-                    datenbank.get(index).setBaujahr(baujahrEingeben("Bitte Baujahr angeben:"));
-                    datenbank.get(index).setPreis(Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class)));
-                } else {
-                    System.out.println("Falsche eingabe! Probiers nochmal!");
-                    eingabeFalsch = true;
+                switch (choice) {
+                    case "1" -> datenbank.get(index).setMarke(addAttribute("Bitte Marke angeben:", String.class));
+                    case "2" -> datenbank.get(index).setModell(addAttribute("Bitte Modell angeben:", String.class));
+                    case "3" -> datenbank.get(index).setFarbe(addAttribute("Bitte Farbe angeben:", String.class));
+                    case "4" -> datenbank.get(index).setBaujahr(baujahrEingeben("Bitte Baujahr angeben:"));
+                    case "5" ->
+                            datenbank.get(index).setPreis(Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class)));
+                    case "6" -> {
+                        datenbank.get(index).setMarke(addAttribute("Bitte Marke angeben:", String.class));
+                        datenbank.get(index).setModell(addAttribute("Bitte Modell angeben:", String.class));
+                        datenbank.get(index).setFarbe(addAttribute("Bitte Farbe angeben:", String.class));
+                        datenbank.get(index).setBaujahr(baujahrEingeben("Bitte Baujahr angeben:"));
+                        datenbank.get(index).setPreis(Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class)));
+                    }
+                    default -> {
+                        System.out.println("Falsche eingabe! Probiers nochmal!");
+                        eingabeFalsch = true;
+                    }
                 }
             } while (eingabeFalsch);
             System.out.println("Das Bearbeiten war erfolgreich!");
@@ -227,12 +235,14 @@ public class MainBoerse {
         Class<?>[] fzgTypen = new Class<?>[]{Pkw.class, Lkw.class, Boot.class, Motorrad.class};
         Random rand = new Random();
         for (int i = 0; i < amountOfCars; i++) {
+
             int marke = rand.nextInt(marken.length);
             int modell = rand.nextInt(modelle.length);
             int farbe = rand.nextInt(farben.length);
             double preis = Math.round(rand.nextDouble(500, 100000) * 100) / 100.00;
             int baujahr = rand.nextInt(1900, 2022);
             int fzgTyp = rand.nextInt(fzgTypen.length);
+            Fahrzeug fahrzeug = new
             anlegenFzg(fzgTypen[fzgTyp], marken[marke], modelle[modell], farben[farbe], baujahr, preis);
         }
     }
@@ -263,19 +273,54 @@ public class MainBoerse {
                 break;
         }
         return Fahrzeug.class;
+    }public static Fahrzeug waehleFzgTyp2() {
+        Fahrzeug fahrzeug = new Fahrzeug();
+        System.out.println("""
+                ---------------------------------------------------
+                Fahrzeugtyp Wählen:
+                1) Pkw
+                2) Lkw
+                3) Boot
+                4) Motorboot
+                ---------------------------------------------------
+                Bitte wählen:""");
+        String choice = sc.nextLine();
+        switch (choice) {
+            case "1":
+                fahrzeug = new Pkw();
+            case "2":
+                fahrzeug = new Lkw();
+            case "3":
+                fahrzeug = new Boot();
+            case "4":
+                fahrzeug = new Motorrad();
+            default:
+                System.out.println("Falsche eingabe! Probiers nochmal!");
+                waehleFzgTyp2();
+                break;
+        }
+        return fahrzeug;
     }
 
 
-    public static void anlegenFzg(Class<?> typ, String marke, String modell, String farbe, int baujahr, double preis) {
-        if (Pkw.class.equals(typ)) {
-            datenbank.add(new Pkw(marke, modell, farbe, baujahr, preis));
-        } else if (Lkw.class.equals(typ)) {
-            datenbank.add(new Lkw(marke, modell, farbe, baujahr, preis));
-        } else if (Boot.class.equals(typ)) {
-            datenbank.add(new Boot(marke, modell, farbe, baujahr, preis));
-        } else if (Motorrad.class.equals(typ)) {
-            datenbank.add(new Motorrad(marke, modell, farbe, baujahr, preis));
-        }
+//    public static void anlegenFzg(Class<?> typ, String marke, String modell, String farbe, int baujahr, double preis) {
+//        if (Pkw.class.equals(typ)) {
+//            datenbank.add(new Pkw(marke, modell, farbe, baujahr, preis));
+//        } else if (Lkw.class.equals(typ)) {
+//            datenbank.add(new Lkw(marke, modell, farbe, baujahr, preis));
+//        } else if (Boot.class.equals(typ)) {
+//            datenbank.add(new Boot(marke, modell, farbe, baujahr, preis));
+//        } else if (Motorrad.class.equals(typ)) {
+//            datenbank.add(new Motorrad(marke, modell, farbe, baujahr, preis));
+//        }
+//    }
+    public static void anlegenFzg2(Fahrzeug typ, String marke, String modell, String farbe, int baujahr, double preis) {
+        typ.setMarke(marke);
+        typ.setModell(modell);
+        typ.setFarbe(farbe);
+        typ.setBaujahr(baujahr);
+        typ.setPreis(preis);
+        datenbank.add(typ);
     }
 
     public static String addAttribute(String soutBegin, Class<?> type) {
@@ -298,7 +343,11 @@ public class MainBoerse {
         } else if (type.equals(Double.class)) {
             result = checkscan.hasNextDouble();
         } else if (type.equals(String.class)) {
-            result = !value.isEmpty();
+            // WIRD RAUSGENOMMEN WEIL.
+            //result = !value.isEmpty();
+            // IST DRIN WEIL!
+            result = true;
+
         }
         checkscan.close();
         return result;
