@@ -51,19 +51,15 @@ public class MainBoerse {
                 System.out.println("Falsche eingabe! Probiers nochmal!");
             }
         } while (fzgTyp == null);
-
         marke = addAttribute("Bitte Marke angeben:", String.class);
         modell = addAttribute("Bitte Modell angeben:", String.class);
         farbe = addAttribute("Bitte Farbe angeben:", String.class);
         baujahr = baujahrEingeben("Bitte Baujahr angeben:");
         preis = Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class));
-
-        // HIER GANZ WICHTIG FALLS WAS NULL IST!
         if (marke.equals("") || modell.equals("") || farbe.equals("")) {
             System.out.println("Eingaben unvollständig!!! DAS FAHRZEUG KONNTE NICHT GESPEICHERT WERDEN!!!");
             hauptMenue();
         }
-
         anlegenFzg(fzgTyp, marke, modell, farbe, baujahr, preis);
         System.out.println("""
                 Fahrzeugtyp angelegt.
@@ -74,13 +70,10 @@ public class MainBoerse {
     }
 
     public static void fzgBearbeiten() {
-        //alle fahrzeuge anzeigen
         for (int i = 1; i <= datenbank.size(); i++) {
             ausgabeFzg(i);
         }
         System.out.println("---------------------------------------------------");
-
-
         int id = Integer.parseInt(addAttribute("ID des zu bearbeitenden Fahrzeugs angeben:", Integer.class));
         int index = findeIndex(id);
         if (index == -1) {
@@ -246,7 +239,6 @@ public class MainBoerse {
             ausgabeFzg(i);
         }
         System.out.println("---------------------------------------------------");
-
         int id = Integer.parseInt(addAttribute("ID des zu löschenden Fahrzeugs angeben:", Integer.class));
         int index = findeIndex(id);
         if (index == -1) {
@@ -282,7 +274,6 @@ public class MainBoerse {
         String[] farben = new String[]{"Rot", "Gruen", "Blau", "Silber", "Regenbogen", "Glitzer", "Fantasie"};
         Random rand = new Random();
         for (int i = 0; i < amountOfCars; i++) {
-
             int marke = rand.nextInt(marken.length);
             int modell = rand.nextInt(modelle.length);
             int farbe = rand.nextInt(farben.length);
@@ -339,7 +330,6 @@ public class MainBoerse {
                 ---------------------------------------------------
                 Bitte wählen:""");
         String choice = sc.nextLine();
-
         return switch (choice) {
             case "1" -> new Pkw();
             case "2" -> new Lkw();
