@@ -1,4 +1,3 @@
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -7,11 +6,11 @@ public class MainBoerse {
     static ArrayList<Fahrzeug> datenbank = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) throws IllegalAccessException {
+    public static void main(String[] args) {
         dummyDaten(30);
         hauptMenue();
-        //Test.test();
     }
+
     public static void hauptMenue() {
         System.out.println("""
                 ---------------------------------------------------
@@ -46,7 +45,13 @@ public class MainBoerse {
                 ---------------------------------------------------
                                     Fahrzeug anlegen
                 ---------------------------------------------------""");
-        fzgTyp = waehleFzgTyp2();
+        do {
+            fzgTyp = createFzgTyp();
+            if (fzgTyp == null) {
+                System.out.println("Falsche eingabe! Probiers nochmal!");
+            }
+        } while (fzgTyp == null);
+
         marke = addAttribute("Bitte Marke angeben:", String.class);
         modell = addAttribute("Bitte Modell angeben:", String.class);
         farbe = addAttribute("Bitte Farbe angeben:", String.class);
@@ -59,7 +64,7 @@ public class MainBoerse {
             hauptMenue();
         }
 
-        anlegenFzg2(fzgTyp, marke, modell, farbe, baujahr, preis);
+        anlegenFzg(fzgTyp, marke, modell, farbe, baujahr, preis);
         System.out.println("""
                 Fahrzeugtyp angelegt.
                 Noch ein Fahrzeug anlegen? (Y/N)""");
@@ -69,6 +74,13 @@ public class MainBoerse {
     }
 
     public static void fzgBearbeiten() {
+        //alle fahrzeuge anzeigen
+        for (int i = 1; i <= datenbank.size(); i++) {
+            ausgabeFzg(i);
+        }
+        System.out.println("---------------------------------------------------");
+
+
         int id = Integer.parseInt(addAttribute("ID des zu bearbeitenden Fahrzeugs angeben:", Integer.class));
         int index = findeIndex(id);
         if (index == -1) {
@@ -103,7 +115,14 @@ public class MainBoerse {
                         datenbank.get(index).setPreis(Double.parseDouble(addAttribute("Bitte Preis angeben", Double.class)));
                     }
                     default -> {
-                        System.out.println("Falsche eingabe! Probiers nochmal!");
+                        System.out.println("""
+                                Falsche eingabe!
+                                1) Nochmal Probieren!
+                                2) Zurück zum Hauptmenü""");
+                        String choice2 = sc.nextLine();
+                        if (choice2.equals("2")) {
+                            hauptMenue();
+                        }
                         eingabeFalsch = true;
                     }
                 }
@@ -140,14 +159,20 @@ public class MainBoerse {
                 fzgSuchen();
             }
         }
+        System.out.println("Noch einmal suchen? j/n");
+        String choice2 = sc.nextLine().toLowerCase();
+        if (choice2.equals("j")) {
+            fzgSuchen();
+        }
         hauptMenue();
     }
-    public static void fzgSuchenBaujahr(){
+
+    public static void fzgSuchenBaujahr() {
         int baujahrMin, baujahrMax, gefundeneMenge = 0;
         baujahrMin = baujahrEingeben("Wie alt darf das Fahrzeug sein?:");
         baujahrMax = baujahrEingeben("Wie neu darf das Fahrzeug sein?");
-        for (Fahrzeug fahrzeug : datenbank){
-            if(baujahrMin <= fahrzeug.getBaujahr() && baujahrMax > fahrzeug.getBaujahr()){
+        for (Fahrzeug fahrzeug : datenbank) {
+            if (baujahrMin <= fahrzeug.getBaujahr() && baujahrMax > fahrzeug.getBaujahr()) {
                 ausgabeFzg(fahrzeug.getId());
                 gefundeneMenge++;
             }
@@ -155,13 +180,14 @@ public class MainBoerse {
         System.out.println("----------------");
         System.out.println("Die Suche nach Baujahr " + baujahrMin + " bis " + baujahrMax + " ergab " + gefundeneMenge + " Treffer.");
     }
-    public static void fzgSuchenPreis(){
+
+    public static void fzgSuchenPreis() {
         double preisMin, preisMax;
         int gefundeneMenge = 0;
         preisMin = Double.parseDouble(addAttribute("Bitte minimalen Preis angeben", Double.class));
         preisMax = Double.parseDouble(addAttribute("Bitte maximalen Preis angeben", Double.class));
-        for (Fahrzeug fahrzeug : datenbank){
-            if(preisMin <= fahrzeug.getPreis() && preisMax > fahrzeug.getPreis()){
+        for (Fahrzeug fahrzeug : datenbank) {
+            if (preisMin <= fahrzeug.getPreis() && preisMax > fahrzeug.getPreis()) {
                 ausgabeFzg(fahrzeug.getId());
                 gefundeneMenge++;
             }
@@ -169,6 +195,7 @@ public class MainBoerse {
         System.out.println("----------------");
         System.out.println("Die Suche nach Preis " + preisMin + " bis " + preisMax + " ergab " + gefundeneMenge + " Treffer.");
     }
+
     public static void fzgSuchenString(String attribut) {
         int gefundeneMenge = 0;
         String wert = addAttribute(attribut + "angeben:", String.class);
@@ -196,7 +223,7 @@ public class MainBoerse {
     }
 
     public static void sucheTyp() {
-        Class<?> fzgTyp = waehleFzgTyp();
+        Class<?> fzgTyp = sucheFzgTyp();
         int gefundeneMenge = 0;
         for (Fahrzeug fahrzeug : datenbank) {
             if (fahrzeug.getClass() == fzgTyp) {
@@ -209,30 +236,45 @@ public class MainBoerse {
     }
 
     public static void fzgLoeschen() {
+        //alle fahrzeuge anzeigen
+        for (int i = 1; i <= datenbank.size(); i++) {
+            ausgabeFzg(i);
+        }
+        System.out.println("---------------------------------------------------");
+
         int id = Integer.parseInt(addAttribute("ID des zu löschenden Fahrzeugs angeben:", Integer.class));
         int index = findeIndex(id);
         if (index == -1) {
-            System.out.println("Id nicht gefunden.");
+            System.out.println("Id nicht gefunden. Gehe zurück zum Hauptmenu");
         } else {
-            datenbank.remove(index);
-            System.out.println("Fahrzeug mit ID: " + id + " wurde gelöscht.");
+            System.out.println("Soll das Fahrzeug wirklich gelöscht werden? j/n");
+            String choice = sc.nextLine().toLowerCase();
+            if (choice.equals("j")) {
+                datenbank.remove(index);
+                System.out.println("Fahrzeug mit ID: " + id + " wurde gelöscht.");
+            }
         }
         hauptMenue();
     }
 
     public static void beenden() {
-        System.out.println("""
-                ---------------------------------------------------
-                               Programm wird beendet!
-                ---------------------------------------------------""");
-        sc.close();
+        System.out.println("Programm wirklich beenden? j/n");
+        String choice = sc.nextLine().toLowerCase();
+        if (choice.equals("j")) {
+            System.out.println("""
+                    ---------------------------------------------------
+                                   Programm wird beendet!
+                    ---------------------------------------------------""");
+            sc.close();
+        } else {
+            hauptMenue();
+        }
     }
 
     public static void dummyDaten(int amountOfCars) {
         String[] marken = new String[]{"BMW", "Audi", "VW", "Opel", "Dacia", "Subaru", "Suzuki"};
         String[] modelle = new String[]{"500", "A7", "Corsa", "3", "Tiguan", "F240", "Diabolo"};
         String[] farben = new String[]{"Rot", "Gruen", "Blau", "Silber", "Regenbogen", "Glitzer", "Fantasie"};
-        Class<?>[] fzgTypen = new Class<?>[]{Pkw.class, Lkw.class, Boot.class, Motorrad.class};
         Random rand = new Random();
         for (int i = 0; i < amountOfCars; i++) {
 
@@ -241,13 +283,19 @@ public class MainBoerse {
             int farbe = rand.nextInt(farben.length);
             double preis = Math.round(rand.nextDouble(500, 100000) * 100) / 100.00;
             int baujahr = rand.nextInt(1900, 2022);
-            int fzgTyp = rand.nextInt(fzgTypen.length);
-            Fahrzeug fahrzeug = new
-            anlegenFzg(fzgTypen[fzgTyp], marken[marke], modelle[modell], farben[farbe], baujahr, preis);
+            int fzgTyp = rand.nextInt(4);
+            Fahrzeug fahrzeug = switch (fzgTyp) {
+                case 0 -> new Pkw();
+                case 1 -> new Lkw();
+                case 2 -> new Boot();
+                case 3 -> new Motorrad();
+                default -> throw new IllegalStateException("Unexpected value: " + fzgTyp);
+            };
+            anlegenFzg(fahrzeug, marken[marke], modelle[modell], farben[farbe], baujahr, preis);
         }
     }
 
-    public static Class<?> waehleFzgTyp() {
+    public static Class<?> sucheFzgTyp() {
         System.out.println("""
                 ---------------------------------------------------
                 Fahrzeugtyp Wählen:
@@ -269,12 +317,13 @@ public class MainBoerse {
                 return Motorrad.class;
             default:
                 System.out.println("Falsche eingabe! Probiers nochmal!");
-                waehleFzgTyp();
+                sucheFzgTyp();
                 break;
         }
         return Fahrzeug.class;
-    }public static Fahrzeug waehleFzgTyp2() {
-        Fahrzeug fahrzeug = new Fahrzeug();
+    }
+
+    public static Fahrzeug createFzgTyp() {
         System.out.println("""
                 ---------------------------------------------------
                 Fahrzeugtyp Wählen:
@@ -285,36 +334,18 @@ public class MainBoerse {
                 ---------------------------------------------------
                 Bitte wählen:""");
         String choice = sc.nextLine();
-        switch (choice) {
-            case "1":
-                fahrzeug = new Pkw();
-            case "2":
-                fahrzeug = new Lkw();
-            case "3":
-                fahrzeug = new Boot();
-            case "4":
-                fahrzeug = new Motorrad();
-            default:
-                System.out.println("Falsche eingabe! Probiers nochmal!");
-                waehleFzgTyp2();
-                break;
-        }
-        return fahrzeug;
+
+        return switch (choice) {
+            case "1" -> new Pkw();
+            case "2" -> new Lkw();
+            case "3" -> new Boot();
+            case "4" -> new Motorrad();
+            default -> null;
+        };
     }
 
 
-//    public static void anlegenFzg(Class<?> typ, String marke, String modell, String farbe, int baujahr, double preis) {
-//        if (Pkw.class.equals(typ)) {
-//            datenbank.add(new Pkw(marke, modell, farbe, baujahr, preis));
-//        } else if (Lkw.class.equals(typ)) {
-//            datenbank.add(new Lkw(marke, modell, farbe, baujahr, preis));
-//        } else if (Boot.class.equals(typ)) {
-//            datenbank.add(new Boot(marke, modell, farbe, baujahr, preis));
-//        } else if (Motorrad.class.equals(typ)) {
-//            datenbank.add(new Motorrad(marke, modell, farbe, baujahr, preis));
-//        }
-//    }
-    public static void anlegenFzg2(Fahrzeug typ, String marke, String modell, String farbe, int baujahr, double preis) {
+    public static void anlegenFzg(Fahrzeug typ, String marke, String modell, String farbe, int baujahr, double preis) {
         typ.setMarke(marke);
         typ.setModell(modell);
         typ.setFarbe(farbe);
@@ -343,11 +374,7 @@ public class MainBoerse {
         } else if (type.equals(Double.class)) {
             result = checkscan.hasNextDouble();
         } else if (type.equals(String.class)) {
-            // WIRD RAUSGENOMMEN WEIL.
-            //result = !value.isEmpty();
-            // IST DRIN WEIL!
             result = true;
-
         }
         checkscan.close();
         return result;
@@ -358,15 +385,7 @@ public class MainBoerse {
         if (index == -1) {
             System.out.println("Id nicht gefunden");
         } else {
-            System.out.println("---------------------------------------------------");
-            System.out.println("Id Nummer:\t\t" + datenbank.get(index).getId());
-            System.out.println("----------------");
-            System.out.println("Fahrzeugtyp:\t" + datenbank.get(index).getClass().getName());
-            System.out.println("Marke:\t\t\t" + datenbank.get(index).getMarke());
-            System.out.println("Modell:\t\t\t" + datenbank.get(index).getModell());
-            System.out.println("Farbe:\t\t\t" + datenbank.get(index).getFarbe());
-            System.out.println("Baujahr:\t\t" + datenbank.get(index).getBaujahr());
-            System.out.println("Preis:\t\t\t" + datenbank.get(index).getPreis());
+            System.out.printf("ID: %-3d Typ: %-10s Marke: %-10s Modell: %-10s Farbe: %-10s Baujahr: %-6d Preis: %10.2f%n", datenbank.get(index).getId(), datenbank.get(index).getClass().getName(), datenbank.get(index).getMarke(), datenbank.get(index).getModell(), datenbank.get(index).getFarbe(), datenbank.get(index).getBaujahr(), datenbank.get(index).getPreis());
         }
     }
 
