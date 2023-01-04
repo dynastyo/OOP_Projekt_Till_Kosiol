@@ -219,7 +219,12 @@ public class MainBoerse {
 
     public static void sucheID() {
         int id = Integer.parseInt(addAttribute("Id angeben:", Integer.class));
-        ausgabeFzg(id);
+        int index = findeIndex(id);
+        if (index == -1) {
+            System.out.println("Id nicht gefunden.");
+        } else {
+            ausgabeFzg(id);
+        }
     }
 
     public static void sucheTyp() {
@@ -382,9 +387,7 @@ public class MainBoerse {
 
     public static void ausgabeFzg(int id) {
         int index = findeIndex(id);
-        if (index == -1) {
-            System.out.println("Id nicht gefunden");
-        } else {
+        if (index != -1) {
             System.out.printf("ID: %-3d Typ: %-10s Marke: %-10s Modell: %-10s Farbe: %-10s Baujahr: %-6d Preis: %10.2f%n", datenbank.get(index).getId(), datenbank.get(index).getClass().getName(), datenbank.get(index).getMarke(), datenbank.get(index).getModell(), datenbank.get(index).getFarbe(), datenbank.get(index).getBaujahr(), datenbank.get(index).getPreis());
         }
     }
